@@ -33,7 +33,7 @@ def apply_action(words, actions):
             words[i_word] = actions_map[action](words[i_word])
 
 def join_word(words):
-    """Склееиваем слова в строку через пробел"""
+    """Склеиваем слова в строку через пробел"""
     return " ".join(words)
 
 text    = generate_string(1000)
