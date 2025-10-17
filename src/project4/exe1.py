@@ -5,16 +5,9 @@ def generate_string(n):
     """Генерация строки"""
     return ''.join([random.choice(string.ascii_letters + string.digits) for i in range(n)])
 
-def split_to_words(text, n_word):
-    """Разбиваем строку на слова с случайной длиной"""
-    words = []
-    for i in range(n_word):
-        word_len = random.randint(3, 10)
-        words.append(text[i:i + word_len])
-    return words
 
-def apply_action(words, actions):
-    """Применяем действие"""
+def apply_action(word, action):
+    """Применяем действия"""
     actions_map = {
         'upper':      lambda w: w.upper(),
         'reverse':    lambda w: w[::-1],
@@ -24,20 +17,29 @@ def apply_action(words, actions):
         'replace':    lambda w: ''.join('Python' if c.isdigit() else c for c in w),
     }
 
-    i_word = -1
-    while i_word < len(words)-1:
-        for action in actions:
-            i_word += 1
-            if i_word >= len(words):
-                break 
-            words[i_word] = actions_map[action](words[i_word])
+    return actions_map[action](word)
 
-def join_word(words):
-    """Склеиваем слова в строку через пробел"""
+def modify_text(text,n_word,actions):
+    """Модификация строки"""
+    words = []  
+    len_text = len(text)
+    i_word = 0
+    begin_word = 0
+    while i_word < n_word:
+        for action in actions:
+            len_word = random.randint(3, 10)
+            if i_word >= n_word or begin_word + len_word > len_text:
+                i_word = n_word
+                break 
+            words.append((apply_action(text[begin_word:begin_word + len_word],action)))
+            begin_word += len_word
+            i_word += 1
+
     return " ".join(words)
 
-text    = generate_string(1000)
-words   = split_to_words(text, 10)
+text = generate_string(100)
+
 actions = ('upper', 'reverse', 'double', 'del_digits', 'del_even', 'replace')
-apply_action(words, actions)
-print(join_word(words))
+text = modify_text(text,10,actions)
+
+print(text)
